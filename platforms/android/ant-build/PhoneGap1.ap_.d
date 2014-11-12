@@ -21,7 +21,6 @@
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/res/drawable-xxhdpi/ic_action_next_item.png \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/res/drawable-xxhdpi/ic_action_previous_item.png \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/res/drawable-xxhdpi/ic_action_remove.png \
-/Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/res/drawable-xxhdpi/icon.png \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/res/values/strings.xml \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/res/xml/config.xml \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/ant-build/res/drawable/icon.png \
@@ -46,7 +45,6 @@
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/ant-build/res/drawable-xxhdpi/ic_action_next_item.png \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/ant-build/res/drawable-xxhdpi/ic_action_previous_item.png \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/ant-build/res/drawable-xxhdpi/ic_action_remove.png \
-/Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/ant-build/res/drawable-xxhdpi/icon.png \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/assets/_where-is-www.txt \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/assets/www \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/assets/www/cordova.js \
@@ -56,6 +54,7 @@
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/assets/www/img \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/assets/www/index.html \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/assets/www/js \
+/Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/assets/www/phonegap.js \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/assets/www/plugins \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/assets/www/res \
 /Volumes/ko/projects/pentaschool/phonegap/phonegap-1/platforms/android/assets/www/spec \
