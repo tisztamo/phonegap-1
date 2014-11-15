@@ -1,63 +1,56 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+/*jslint sloppy: true vars:true*/
+/*global device, Camera, StoredImage*/
 var app = {
-      // Application Constructor
-      initialize: function () {
-         this.bindEvents();
-      },
-      // Bind Event Listeners
-      //
-      // Bind any events that are required on startup. Common events are:
-      // 'load', 'deviceready', 'offline', and 'online'.
-      bindEvents: function () {
-         document.addEventListener('deviceready', this.onDeviceReady, false);
-      },
-      // deviceready Event Handler
-      //
-      // The scope of 'this' is the event. In order to call the 'receivedEvent'
-      // function, we must explicitly call 'app.receivedEvent(...);'
-      onDeviceReady: function () {
-         app.receivedEvent('deviceready');
-      },
-      // Update DOM on a Received Event
-      receivedEvent: function (id) {
-         var parentElement = document.getElementById(id);
-         var listeningElement = parentElement.querySelector('.listening');
-         var receivedElement = parentElement.querySelector('.received');
+  // Application Constructor
+  initialize: function () {
+    this.avgZ = 0;
+    this.profile = new StoredImage('profile');
+    this.bindEvents();
+  },
+  // Bind Event Listeners
+  //
+  // Bind any events that are required on startup. Common events are:
+  // 'load', 'deviceready', 'offline', and 'online'.
+  bindEvents: function () {
+    document.addEventListener('deviceready', this.onDeviceReady, false);
+    window.addEventListener('push', this.onPush);
+  },
+  // deviceready Event Handler
+  //
+  // The scope of 'this' is the event. In order to call the 'receivedEvent'
+  // function, we must explicitly call 'app.receivedEvent(...);'
+  onDeviceReady: function () {
+    document.getElementById('deviceready').innerText = "Device is Ready";
+  },
 
-         listeningElement.setAttribute('style', 'display:none;');
-         receivedElement.setAttribute('style', 'display:block;');
+  //Handles the event from push.js - new page is loaded
+  onPush: function (e) {
+    if (!e.detail) {
+      return;
+    }
+    if (e.detail.state.url.match(/profile/)) {
+      setTimeout(function () {
+        app.displayProfilePicture();
+      }, 10);
+    }
+    if (e.detail.state.url.match(/acceleration/)) {
+      app.startAccelWatch();
+    } else {
+      app.stopAccelWatch();
+    }
+  },
 
-         console.log('Received Event: ' + id);
-      },
+  isIOS: function () {
+    var p = device.platform;
+    return p === "iOS";
+  },
 
-      isIOS: function () {
-         var p = device.platform;
-         return p == "iOS";
-      },
-
-      testVibrate: function () {
-         var pause = 200;
-         if (this.isIOS()) {
-            navigator.notification.vibrate();
-         } else {
-            navigator.notification.vibrateWithPattern([0, 500, pause,
+  testVibrate: function () {
+    var pause = 200;
+    if (this.isIOS()) {
+      navigator.notification.vibrate(200);
+    } else {
+      navigator.notification.vibrateWithPattern([0, 500, pause,
                500, pause,
                500, pause,
                1500, pause,
@@ -66,6 +59,81 @@ var app = {
                500, pause,
                500, pause,
                500, pause]);
-         }
+    }
+  },
+
+  error: function (errorMessage) {
+    window.alert(errorMessage);
+  },
+
+  /** Displays the currently saved profile image or the optional given one in the placeholder img.
+   */
+  displayProfilePicture: function (imageData) {
+    var img = document.getElementById('profileimage');
+    var profileDataUrl = imageData ? app.profile.transformDataToUrl(imageData) : app.profile.getDataUrl();
+    img.setAttribute("src", profileDataUrl || "img/defaultprofile.png");
+  },
+
+  changeProfilePicture: function () {
+    var cameraSuccess = function (imageData) {
+        app.displayProfilePicture(imageData);
+        app.profile.store(imageData);
+      },
+      cameraFail = function () {
+        app.error("Camera problem.");
+      };
+    navigator.camera.getPicture(cameraSuccess, cameraFail, {
+      quality: 5,
+      destinationType: Camera.DestinationType.DATA_URL
+    });
+  },
+
+  onDropDetected: function () {
+    var el = document.getElementById("dropdisplay");
+    if (el) {
+      el.style.display = 'block';
+      setTimeout(function () {
+        el.style.display = 'none';
+      }, 400);
+    }
+  },
+
+  detectDrop: function (acceleration) {
+    var alpha = 0.1,
+      z = acceleration.z;
+    this.avgZ = (1 - alpha) * this.avgZ + alpha * z;
+    if (z < 5 && this.avgZ > 8 && Math.abs(acceleration.x) + Math.abs(acceleration.y) < 6) {
+      this.onDropDetected();
+    }
+  },
+
+  accelerationReceived: function (acceleration) {
+    ['x', 'y', 'z'].forEach(function (key) {
+      var outElement = document.getElementById("accel" + key);
+      if (outElement) {
+        outElement.innerText = acceleration[key];
       }
-   };
+    });
+    app.detectDrop(acceleration);
+  },
+
+  accelerationError: function (e) {
+    this.error("Acceleration error: " + e);
+  },
+
+  startAccelWatch: function () {
+    if (this.watchId) {
+      return;
+    }
+    this.watchId = navigator.accelerometer.watchAcceleration(this.accelerationReceived, this.accelerationError, {
+      frequency: 50
+    });
+  },
+
+  stopAccelWatch: function () {
+    if (this.watchId) {
+      navigator.accelerometer.clearWatch(this.watchId);
+      this.watchId = null;
+    }
+  }
+};
