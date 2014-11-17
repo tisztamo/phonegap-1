@@ -108,12 +108,7 @@ var app = {
   },
 
   accelerationReceived: function (acceleration) {
-    ['x', 'y', 'z'].forEach(function (key) {
-      var outElement = document.getElementById("accel" + key);
-      if (outElement) {
-        outElement.innerText = acceleration[key];
-      }
-    });
+//TODO
     app.detectDrop(acceleration);
   },
 
@@ -122,18 +117,10 @@ var app = {
   },
 
   startAccelWatch: function () {
-    if (this.watchId) {
-      return;
-    }
-    this.watchId = navigator.accelerometer.watchAcceleration(this.accelerationReceived, this.accelerationError, {
-      frequency: 50
-    });
+    //TODO
   },
 
   stopAccelWatch: function () {
-    if (this.watchId) {
-      navigator.accelerometer.clearWatch(this.watchId);
-      this.watchId = null;
-    }
+    //TODO
   }
 };
